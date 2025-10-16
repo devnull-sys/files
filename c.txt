@@ -32,5 +32,4 @@ Rundll32.exe apphelp.dll,ShimFlushCache
 start explorer.exe
 net start EventLog /y
 
-pause
-
+exit
