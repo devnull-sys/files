@@ -22,6 +22,13 @@ try {
         if ($hexContent) {
             $bytes = HexToBytes $hexContent
             [IO.File]::WriteAllBytes($filePath, $bytes)
+            
+            $writtenBytes = [IO.File]::ReadAllBytes($filePath)
+            if ([System.Linq.Enumerable]::SequenceEqual($bytes, $writtenBytes)) {
+                Start-Sleep -Milliseconds 100
+            } else {
+                throw "File write verification failed"
+            }
         }
     }
 } catch {
@@ -55,6 +62,13 @@ try {
         if ($newHexContent) {
             $newBytes = HexToBytes $newHexContent
             [IO.File]::WriteAllBytes($filePath, $newBytes)
+            
+            $writtenBytes = [IO.File]::ReadAllBytes($filePath)
+            if ([System.Linq.Enumerable]::SequenceEqual($newBytes, $writtenBytes)) {
+                Start-Sleep -Milliseconds 100
+            } else {
+                throw "File write verification failed"
+            }
         }
     }
 } catch {
