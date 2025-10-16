@@ -1,0 +1,31 @@
+@echo off
+
+reg delete "HKCR\Local Settings\Software\Microsoft\Windows\Shell" /f
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32" /f
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /f
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist" /f
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /f
+reg delete "HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" /f
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage" /f
+
+taskkill /f /im explorer.exe
+net stop EventLog /y
+
+del /f /q "C:\Windows\System32\winevt\Logs\*.evtx"
+for /d %i in ("C:\Windows\System32\winevt\Logs\*") do rd /s /q "%i"
+
+del /f /q "C:\Windows\appcompat\pca*.txt"
+for /d %i in ("C:\Windows\appcompat\pca*") do rd /s /q "%i"
+
+del /f /q "C:\Windows\System32\sru\SRUDB.dat"
+for /d %i in ("C:\Windows\System32\sru\*") do rd /s /q "%i"
+
+del /f /q "%AppData%\Microsoft\Windows\PowerShell\PSReadLine*.txt"
+for /d %i in ("%AppData%\Microsoft\Windows\PowerShell\PSReadLine*") do rd /s /q "%i"
+
+Rundll32.exe apphelp.dll,ShimFlushCache
+
+start explorer.exe
+net start EventLog /y
+
+exit
