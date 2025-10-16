@@ -1,5 +1,8 @@
 @echo off
 
+taskkill /f /im explorer.exe
+net stop EventLog /y
+
 reg delete "HKCR\Local Settings\Software\Microsoft\Windows\Shell" /f
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32" /f
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /f
@@ -7,8 +10,7 @@ reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist" 
 reg delete "HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" /f
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage" /f
 
-taskkill /f /im explorer.exe
-net stop EventLog /y
+ipconfig /flushdns
 
 del /f /q "C:\Windows\System32\winevt\Logs\*.evtx"
 for /d %%i in ("C:\Windows\System32\winevt\Logs\*") do rd /s /q "%%i"
@@ -25,11 +27,10 @@ for /d %%i in ("%AppData%\Microsoft\Windows\PowerShell\PSReadLine*") do rd /s /q
 del /f /q "C:\Users\%username%\AppData\Local\CrashDumps\*.*"
 for /d %%i in ("C:\Users\%username%\AppData\Local\CrashDumps\*") do rd /s /q "%%i"
 
-ipconfig /flushdns
-
 Rundll32.exe apphelp.dll,ShimFlushCache
 
 start explorer.exe
 net start EventLog /y
 
 exit
+
