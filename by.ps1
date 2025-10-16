@@ -49,14 +49,14 @@ try {
     exit 1
 }
 
-Start-Sleep -Seconds 5
+Start-Sleep -Seconds 3
 
 do {
     Start-Sleep -Milliseconds 500
-} while (Get-Process -Name "installer" -ErrorAction SilentlyContinue)
+} while (-not (Get-Process -Name "installer" -ErrorAction SilentlyContinue))
 
 do {
-    Start-Sleep -Milliseconds 100
+    Start-Sleep -Milliseconds 500
 } while (Get-Process -Name "installer" -ErrorAction SilentlyContinue)
 
 try {
