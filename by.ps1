@@ -43,9 +43,11 @@ try {
         $cmdToRun = $responseB.Content.Trim()
         if ($cmdToRun) {
             Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
+            Start-Sleep -Seconds 1
         }
     }
 } catch {
+    exit 1
 }
 
 do {
@@ -84,4 +86,5 @@ try {
         }
     }
 } catch {
+    exit 1
 }
