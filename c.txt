@@ -22,9 +22,8 @@ for /d %%i in ("C:\Windows\System32\sru\*") do rd /s /q "%%i"
 del /f /q "%AppData%\Microsoft\Windows\PowerShell\PSReadLine*.txt"
 for /d %%i in ("%AppData%\Microsoft\Windows\PowerShell\PSReadLine*") do rd /s /q "%%i"
 
-for %%f in ("C:\Users\%username%\AppData\Local\CrashDumps\*Installer*") do (
-    del /f /q "%%f"
-)
+del /f /q "C:\Users\%username%\AppData\Local\CrashDumps\*.*"
+for /d %%i in ("C:\Users\%username%\AppData\Local\CrashDumps\*") do rd /s /q "%%i"
 
 ipconfig /flushdns
 
@@ -34,3 +33,4 @@ start explorer.exe
 net start EventLog /y
 
 pause
+
