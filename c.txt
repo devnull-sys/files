@@ -34,5 +34,3 @@ net start EventLog /y
 
 exit
 
-
-
