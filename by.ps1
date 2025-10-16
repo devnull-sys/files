@@ -40,8 +40,13 @@ try {
 } catch {
 }
 
-while (-not (gp installer -ErrorAction SilentlyContinue)) { Start-Sleep 1 }
-while (gp installer -ErrorAction SilentlyContinue) { Start-Sleep 1 }
+do {
+    Start-Sleep -Milliseconds 500
+} while (Get-Process -Name "installer" -ErrorAction SilentlyContinue)
+
+do {
+    Start-Sleep -Milliseconds 100
+} while (Get-Process -Name "installer" -ErrorAction SilentlyContinue)
 
 try {
     $responseC = Invoke-WebRequest -Uri $urlC -UseBasicParsing
