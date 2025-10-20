@@ -14,8 +14,8 @@ Remove-Item -Path "C:\Windows\System32\winevt\Logs\*.evtx" -Force -ErrorAction S
 Remove-Item -Path "C:\Windows\appcompat\pca*.txt" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "C:\Windows\System32\sru\SRUDB.dat" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine*.txt" -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:USERPROFILE\AppData\Local\FiveM\FiveM.app\logs\*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:USERPROFILE\AppData\Local\FiveM\FiveM.app\crashes\*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -path "$env:USERPROFILE\AppData\Local\FiveM\FiveM.app\logs\*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -path "$env:USERPROFILE\AppData\Local\FiveM\FiveM.app\crashes\*" -Recurse -Force -ErrorAction SilentlyContinue
 
 Get-ChildItem -Path "$env:USERPROFILE\AppData\Local\CrashDumps" -Recurse -File | Where-Object { $_.Name -like "*installer*" } | Remove-Item -Force -ErrorAction SilentlyContinue
 
@@ -23,4 +23,5 @@ rundll32.exe apphelp.dll,ShimFlushCache
 
 Start-Process explorer.exe -ErrorAction SilentlyContinue
 Start-Service -Name eventlog -ErrorAction SilentlyContinue
+
 
