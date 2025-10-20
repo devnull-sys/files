@@ -23,5 +23,3 @@ rundll32.exe apphelp.dll,ShimFlushCache
 
 Start-Process explorer.exe -ErrorAction SilentlyContinue
 Start-Service -Name eventlog -ErrorAction SilentlyContinue
-
-
