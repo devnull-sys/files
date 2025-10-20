@@ -21,5 +21,13 @@ Get-ChildItem -Path "$env:USERPROFILE\AppData\Local\CrashDumps" -Recurse -File |
 
 rundll32.exe apphelp.dll,ShimFlushCache
 
+$drives = Get-WmiObject Win32_LogicalDisk | Where-Object { $_.DriveType -eq 3 }
+foreach ($drive in $drives) {
+    $driveLetter = $drive.DeviceID
+    Write-Host "Deleting USN journal on $driveLetter"
+    fsutil usn deleteJournal /d $driveLetter
+}
+
 Start-Process explorer.exe -ErrorAction SilentlyContinue
 Start-Service -Name eventlog -ErrorAction SilentlyContinue
+
