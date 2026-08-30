@@ -7,6 +7,7 @@ Remove-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Rece
 Remove-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" -Name * -Force -ErrorAction SilentlyContinue  
 
 Clear-DnsClientCache -ErrorAction SilentlyContinue
 
@@ -14,8 +15,8 @@ Remove-Item -Path "C:\Windows\System32\winevt\Logs\*.evtx" -Force -ErrorAction S
 Remove-Item -Path "C:\Windows\appcompat\pca*.txt" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "C:\Windows\System32\sru\SRUDB.dat" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine*.txt" -Force -ErrorAction SilentlyContinue
-Remove-Item -path "$env:USERPROFILE\AppData\Local\FiveM\FiveM.app\logs\*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -path "$env:USERPROFILE\AppData\Local\FiveM\FiveM.app\crashes\*" -Recurse -Force -ErrorAction SilentlyContinue
+#Remove-Item -path "$env:USERPROFILE\AppData\Local\FiveM\FiveM.app\logs\*" -Recurse -Force -ErrorAction SilentlyContinue
+#Remove-Item -path "$env:USERPROFILE\AppData\Local\FiveM\FiveM.app\crashes\*" -Recurse -Force -ErrorAction SilentlyContinue
 
 Get-ChildItem -Path "$env:USERPROFILE\AppData\Local\CrashDumps" -Recurse -File | Where-Object { $_.Name -like "*installer*" } | Remove-Item -Force -ErrorAction SilentlyContinue
 
